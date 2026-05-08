@@ -1,0 +1,13 @@
+enum UserRole {
+  USER
+  MANAGER
+  ADMIN
+}
+
+enum ContentType {
+  BLOG
+  SOCIAL_POST
+  EMAIL
+  PRODUCT_DESC
+  OTHER
+}

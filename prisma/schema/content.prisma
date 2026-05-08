@@ -1,0 +1,13 @@
+model Content {
+  id        String      @id @default(cuid())
+  title     String
+  content   String // full generated content
+  type      ContentType
+  prompt    String
+  metadata  Json? // seo score, keywords, etc.
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+
+  @@index([userId, type])
+}

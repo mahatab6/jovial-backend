@@ -1,0 +1,11 @@
+model GenerationHistory {
+  id          String   @id @default(cuid())
+  userId      String
+  prompt      String
+  response    String
+  tokensUsed  Int?
+  modelUsed   String   // gpt-4o, gemini-pro etc.
+  cost        Float?   // approximate
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+}
