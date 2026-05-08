@@ -377,10 +377,15 @@ export class QueryBuilder<
     }
 
     private deepMerge(target: any, source: any) {
+        if (!source || typeof source !== "object" || Array.isArray(source)) {
+            return source;
+        }
+
         const result = { ...target };
 
         Object.keys(source).forEach((key) => {
             if (
+                source[key] !== null &&
                 typeof source[key] === "object" &&
                 !Array.isArray(source[key])
             ) {

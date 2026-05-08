@@ -51,7 +51,7 @@ class UserService {
   static async getAllUsers(queryParams: IQueryParams) {
     const userQuery = new QueryBuilder(prisma.user, queryParams, {
       searchableFields: ["name", "email"],
-      filterableFields: ["role"],
+      filterableFields: ["role", "status"],
     })
       .search()
       .filter()

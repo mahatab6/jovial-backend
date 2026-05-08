@@ -3,6 +3,7 @@ import { catchAsync } from "../../share/catchAsync";
 import { sendResponse } from "../../share/sendResponse";
 import status from "http-status";
 import UserService from "./user.service";
+import { IQueryParams } from "../../interface/query.interface";
 
 const getMe = catchAsync(async (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -29,7 +30,7 @@ const updateMe = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.getAllUsers(req.query as any);
+  const result = await UserService.getAllUsers(req.query as IQueryParams);
 
   sendResponse(res, {
     httpStatusCode: status.OK,

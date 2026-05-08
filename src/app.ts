@@ -5,6 +5,8 @@ import cookieParser from 'cookie-parser';
 import { IndexRoutes } from './app/routes';
 import { toNodeHandler } from 'better-auth/node';
 import { auth } from './app/lib/auth';
+import { requestLogger } from './app/middlewares/logger.middleware';
+import { globalErrorHandler } from './app/middlewares/globalErrorHandler';
 
 const app: Application = express()
 
@@ -15,6 +17,7 @@ app.use(
   })
 );
 
+app.use(requestLogger);
 app.use(express.json());
 app.use(cookieParser());
 
@@ -26,4 +29,6 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Jovial AI backend running ')
 })
 
-export default app;
+app.use(globalErrorHandler);
+
+export default app;

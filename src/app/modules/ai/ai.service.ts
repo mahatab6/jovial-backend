@@ -6,6 +6,7 @@ import { ContentType, UserRole } from "../../generated/prisma/enums";
 import status from "http-status";
 import { QueryBuilder } from "../../utils/QueryBuilder";
 import { IQueryParams } from "../../interface/query.interface";
+import { LoggerUtils } from "../../utils/logger.utils";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -115,12 +116,19 @@ Prompt: ${prompt}
         aiResponse = await this.callOpenAI(systemPrompt, userPrompt, model || defaultModel);
       }
     } catch (error: any) {
-      console.error(`[${provider.toUpperCase()}] Error:`, error.message);
+      LoggerUtils.ai.error(provider, error.message, { userId, model: model || defaultModel });
       throw new AppErrors(
         status.BAD_GATEWAY,
         `${provider.toUpperCase()} Error: ${error.message}`
       );
     }
+
+    // AI Generation Log
+    LoggerUtils.ai.generation(provider, model || defaultModel, userId, {
+      type,
+      tone,
+      promptLength: prompt.length,
+    });
 
     // Database Save
     const [content, history] = await prisma.$transaction([

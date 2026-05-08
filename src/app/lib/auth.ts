@@ -5,6 +5,8 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { envVariable } from "../../config/env";
 
+import { authLogger } from "../../config/logger";
+
 export const auth = betterAuth({
   baseUrl: envVariable.BETTER_AUTH_URL!,
   secret: envVariable.BETTER_AUTH_SECRET!,
@@ -14,7 +16,22 @@ export const auth = betterAuth({
     envVariable.BETTER_AUTH_URL,
   ],
 
+  logger: {
+    level: "info",
+    log: (level, message, ...args) => {
+      const logMessage = `[Better-Auth] ${message}`;
+      if (level === "error") {
+        authLogger.error(logMessage, ...args);
+      } else if (level === "warn") {
+        authLogger.warn(logMessage, ...args);
+      } else {
+        authLogger.info(logMessage, ...args);
+      }
+    },
+  },
+
   database: prismaAdapter(prisma, {
+
     provider: "postgresql",
   }),
 
