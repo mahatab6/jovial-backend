@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { prisma } from "../../lib/prisma";
-import AppErrors from "../../errorHandler/AppErrors";
+import AppError from "../../errors/AppError";
 import { ContentType, UserRole } from "../../generated/prisma/enums";
 import status from "http-status";
 import { QueryBuilder } from "../../utils/QueryBuilder";
@@ -118,7 +118,7 @@ Prompt: ${prompt}
       }
     } catch (error: any) {
       LoggerUtils.ai.error(provider, error.message, { userId, model: model || defaultModel });
-      throw new AppErrors(
+      throw new AppError(
         status.BAD_GATEWAY,
         `${provider.toUpperCase()} Error: ${error.message}`
       );
@@ -195,11 +195,11 @@ Prompt: ${prompt}
     });
 
     if (!existingContent) {
-      throw new AppErrors(status.NOT_FOUND, "Content not found");
+      throw new AppError(status.NOT_FOUND, "Content not found");
     }
 
     if (userRole !== UserRole.ADMIN && existingContent.userId !== userId) {
-      throw new AppErrors(status.FORBIDDEN, "Access denied");
+      throw new AppError(status.FORBIDDEN, "Access denied");
     }
 
     const result = await this.generateContent(userId, {
@@ -255,11 +255,11 @@ Prompt: ${prompt}
     });
 
     if (!content || content.deletedAt) {
-      throw new AppErrors(status.NOT_FOUND, "Content not found");
+      throw new AppError(status.NOT_FOUND, "Content not found");
     }
 
     if (userRole !== UserRole.ADMIN && content.userId !== userId) {
-      throw new AppErrors(status.FORBIDDEN, "Access denied");
+      throw new AppError(status.FORBIDDEN, "Access denied");
     }
 
     await CacheUtils.set(cacheKey, content, 1800); // Cache for 30 mins
@@ -272,11 +272,11 @@ Prompt: ${prompt}
     });
 
     if (!content || content.deletedAt) {
-      throw new AppErrors(status.NOT_FOUND, "Content not found");
+      throw new AppError(status.NOT_FOUND, "Content not found");
     }
 
     if (content.userId !== userId) {
-      throw new AppErrors(status.FORBIDDEN, "Access denied");
+      throw new AppError(status.FORBIDDEN, "Access denied");
     }
 
     const result = await prisma.content.update({
@@ -297,11 +297,11 @@ Prompt: ${prompt}
     });
 
     if (!content || content.deletedAt) {
-      throw new AppErrors(status.NOT_FOUND, "Content not found");
+      throw new AppError(status.NOT_FOUND, "Content not found");
     }
 
     if (userRole !== UserRole.ADMIN && content.userId !== userId) {
-      throw new AppErrors(status.FORBIDDEN, "Access denied");
+      throw new AppError(status.FORBIDDEN, "Access denied");
     }
 
     const result = await prisma.content.update({

@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { catchAsync } from "../../share/catchAsync";
+import asyncHandler from "../../utils/asyncHandler";
 import { sendResponse } from "../../share/sendResponse";
 import status from "http-status";
 import AdminService from "./admin.service";
 
-const getDashboardStats = catchAsync(async (req: Request, res: Response) => {
+const getDashboardStats = asyncHandler(async (req: Request, res: Response) => {
   const result = await AdminService.getDashboardStats();
 
   sendResponse(res, {
@@ -15,7 +15,7 @@ const getDashboardStats = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getUsageOverview = catchAsync(async (req: Request, res: Response) => {
+const getUsageOverview = asyncHandler(async (req: Request, res: Response) => {
   const result = await AdminService.getUsageOverview(req.query);
 
   sendResponse(res, {
@@ -26,7 +26,7 @@ const getUsageOverview = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getAICostAnalytics = catchAsync(async (req: Request, res: Response) => {
+const getAICostAnalytics = asyncHandler(async (req: Request, res: Response) => {
   const result = await AdminService.getAICostAnalytics();
 
   sendResponse(res, {
@@ -37,7 +37,7 @@ const getAICostAnalytics = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getUsersList = catchAsync(async (req: Request, res: Response) => {
+const getUsersList = asyncHandler(async (req: Request, res: Response) => {
   const result = await AdminService.getUsersList(req.query as any);
 
   sendResponse(res, {
@@ -48,6 +48,7 @@ const getUsersList = catchAsync(async (req: Request, res: Response) => {
     meta: result.meta,
   });
 });
+
 
 export const AdminController = {
   getDashboardStats,

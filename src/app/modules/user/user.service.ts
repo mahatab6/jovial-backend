@@ -1,6 +1,6 @@
 import { prisma } from "../../lib/prisma";
 import { UserRole } from "../../generated/prisma/enums";
-import AppErrors from "../../errorHandler/AppErrors";
+import AppError from "../../errors/AppError";
 import status from "http-status";
 import { UserUtils } from "./user.utils";
 import { QueryBuilder } from "../../utils/QueryBuilder";
@@ -21,7 +21,7 @@ class UserService {
     });
 
     if (!user) {
-      throw new AppErrors(status.NOT_FOUND, "User not found");
+      throw new AppError(status.NOT_FOUND, "User not found");
     }
 
     const sanitizedUser = UserUtils.sanitizeUserResponse(user);
@@ -84,7 +84,7 @@ class UserService {
     });
 
     if (!user) {
-      throw new AppErrors(status.NOT_FOUND, "User not found");
+      throw new AppError(status.NOT_FOUND, "User not found");
     }
 
     // Get usage stats summary
@@ -106,7 +106,7 @@ class UserService {
 
   static async updateRole(adminId: string, targetId: string, role: UserRole) {
     if (adminId === targetId) {
-      throw new AppErrors(status.BAD_REQUEST, "Self-demotion is not allowed");
+      throw new AppError(status.BAD_REQUEST, "Self-demotion is not allowed");
     }
 
     const user = await prisma.user.update({
@@ -119,7 +119,7 @@ class UserService {
 
   static async deleteUser(adminId: string, targetId: string) {
     if (adminId === targetId) {
-      throw new AppErrors(status.BAD_REQUEST, "Self-deletion is not allowed");
+      throw new AppError(status.BAD_REQUEST, "Self-deletion is not allowed");
     }
 
     // Check if super admin (this is a mock check, usually ID based)

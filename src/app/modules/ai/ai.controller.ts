@@ -1,6 +1,7 @@
 // src/controllers/ai.controller.ts
 import { Request, Response } from "express";
-import { catchAsync } from "../../share/catchAsync";
+import asyncHandler from "../../utils/asyncHandler";
+
 import { sendResponse } from "../../share/sendResponse";
 import status from "http-status";
 import { ContentType } from "../../generated/prisma/enums";
@@ -9,7 +10,7 @@ import { aiGenerationQueue } from "../../../config/queue";
 import { UserRole } from "../../generated/prisma/enums";
 
 
-const generateContent = catchAsync(async (req: Request, res: Response) => {
+const generateContent = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const userRole = req.user?.role;
 
@@ -59,7 +60,7 @@ const generateContent = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getJobStatus = catchAsync(async (req: Request, res: Response) => {
+const getJobStatus = asyncHandler(async (req: Request, res: Response) => {
   const { jobId } = req.params;
   const job = await aiGenerationQueue.getJob(jobId as string);
 
@@ -90,7 +91,7 @@ const getJobStatus = catchAsync(async (req: Request, res: Response) => {
 });
 
 
-const generateBulk = catchAsync(async (req: Request, res: Response) => {
+const generateBulk = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const { items } = req.body;
 
@@ -104,7 +105,7 @@ const generateBulk = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const regenerate = catchAsync(async (req: Request, res: Response) => {
+const regenerate = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const userRole = req.user?.role;
   const { id } = req.params;
@@ -119,7 +120,7 @@ const regenerate = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getMyContents = catchAsync(async (req: Request, res: Response) => {
+const getMyContents = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const result = await AIService.getMyContents(userId!, req.query as any);
 
@@ -132,7 +133,7 @@ const getMyContents = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const searchContents = catchAsync(async (req: Request, res: Response) => {
+const searchContents = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const result = await AIService.searchContents(userId!, req.query as any);
 
@@ -145,7 +146,7 @@ const searchContents = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getSingleContent = catchAsync(async (req: Request, res: Response) => {
+const getSingleContent = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const userRole = req.user?.role;
   const { id } = req.params;
@@ -160,7 +161,7 @@ const getSingleContent = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const updateContent = catchAsync(async (req: Request, res: Response) => {
+const updateContent = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const { id } = req.params;
 
@@ -174,7 +175,7 @@ const updateContent = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const deleteContent = catchAsync(async (req: Request, res: Response) => {
+const deleteContent = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const userRole = req.user?.role;
   const { id } = req.params;
@@ -189,7 +190,7 @@ const deleteContent = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getTeamContents = catchAsync(async (req: Request, res: Response) => {
+const getTeamContents = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const result = await AIService.getTeamContents(userId!, req.query as any);
 
@@ -202,7 +203,7 @@ const getTeamContents = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getAllContents = catchAsync(async (req: Request, res: Response) => {
+const getAllContents = asyncHandler(async (req: Request, res: Response) => {
   const result = await AIService.getAllContents(req.query as any);
 
   sendResponse(res, {

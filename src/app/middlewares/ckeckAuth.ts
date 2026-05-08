@@ -2,7 +2,7 @@
 
 import { NextFunction, Request, Response } from "express";
 import { UserRole } from "../generated/prisma/enums";
-import AppErrors from "../errorHandler/AppErrors";
+import AppError from "../errors/AppError";
 import status from "http-status";
 import { auth } from "../lib/auth";
 
@@ -21,7 +21,7 @@ export const checkAuth =
         }
 
         if (!userData) {
-          throw new AppErrors(
+          throw new AppError(
             status.UNAUTHORIZED,
             "Authentication required. Please login.",
           );
@@ -31,7 +31,7 @@ export const checkAuth =
           authRole.length > 0 &&
           !authRole.includes(userData.role as UserRole)
         ) {
-          throw new AppErrors(
+          throw new AppError(
             status.FORBIDDEN,
             "You do not have permission to perform this action.",
           );

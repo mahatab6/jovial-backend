@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-import { catchAsync } from "../../share/catchAsync";
+import asyncHandler from "../../utils/asyncHandler";
 import { sendResponse } from "../../share/sendResponse";
 import status from "http-status";
 import HistoryStatsService from "./historyStats.service";
 
-const getPersonalHistory = catchAsync(async (req: Request, res: Response) => {
+const getPersonalHistory = asyncHandler(async (req: Request, res: Response) => {
+
   const userId = req.user?.id;
   const result = await HistoryStatsService.getPersonalHistory(userId!, req.query as any);
 
@@ -17,7 +18,7 @@ const getPersonalHistory = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getTeamHistory = catchAsync(async (req: Request, res: Response) => {
+const getTeamHistory = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const userRole = req.user?.role;
   const result = await HistoryStatsService.getTeamHistory(userId!, req.query as any, userRole!);
@@ -31,7 +32,7 @@ const getTeamHistory = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getAllHistory = catchAsync(async (req: Request, res: Response) => {
+const getAllHistory = asyncHandler(async (req: Request, res: Response) => {
   const result = await HistoryStatsService.getAllHistory(req.query as any);
 
   sendResponse(res, {
@@ -43,7 +44,7 @@ const getAllHistory = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getPersonalUsageStats = catchAsync(async (req: Request, res: Response) => {
+const getPersonalUsageStats = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const result = await HistoryStatsService.getPersonalUsageStats(userId!, req.query);
 
@@ -55,7 +56,7 @@ const getPersonalUsageStats = catchAsync(async (req: Request, res: Response) => 
   });
 });
 
-const getTeamAnalytics = catchAsync(async (req: Request, res: Response) => {
+const getTeamAnalytics = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const userRole = req.user?.role;
   const result = await HistoryStatsService.getTeamAnalytics(userId!, req.query, userRole!);
@@ -68,7 +69,7 @@ const getTeamAnalytics = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getGlobalAnalytics = catchAsync(async (req: Request, res: Response) => {
+const getGlobalAnalytics = asyncHandler(async (req: Request, res: Response) => {
   const result = await HistoryStatsService.getGlobalAnalytics();
 
   sendResponse(res, {
@@ -79,7 +80,7 @@ const getGlobalAnalytics = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getContentTypeDistribution = catchAsync(async (req: Request, res: Response) => {
+const getContentTypeDistribution = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const userRole = req.user?.role;
   const result = await HistoryStatsService.getContentTypeDistribution(userId!, userRole!);
@@ -92,7 +93,7 @@ const getContentTypeDistribution = catchAsync(async (req: Request, res: Response
   });
 });
 
-const getModelUsageAnalytics = catchAsync(async (req: Request, res: Response) => {
+const getModelUsageAnalytics = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const userRole = req.user?.role;
   const result = await HistoryStatsService.getModelUsageAnalytics(userId!, userRole!);

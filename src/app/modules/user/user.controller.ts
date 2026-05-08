@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { catchAsync } from "../../share/catchAsync";
+import asyncHandler from "../../utils/asyncHandler";
 import { sendResponse } from "../../share/sendResponse";
 import status from "http-status";
 import UserService from "./user.service";
 import { IQueryParams } from "../../interface/query.interface";
 
-const getMe = catchAsync(async (req: Request, res: Response) => {
+const getMe = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const result = await UserService.getMe(userId!);
 
@@ -17,7 +17,7 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const updateMe = catchAsync(async (req: Request, res: Response) => {
+const updateMe = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const result = await UserService.updateMe(userId!, req.body);
 
@@ -29,7 +29,7 @@ const updateMe = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   const result = await UserService.getAllUsers(req.query as IQueryParams);
 
   sendResponse(res, {
@@ -41,7 +41,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getSingleUser = catchAsync(async (req: Request, res: Response) => {
+const getSingleUser = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await UserService.getSingleUser(id as string);
 
@@ -53,7 +53,7 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const updateRole = catchAsync(async (req: Request, res: Response) => {
+const updateRole = asyncHandler(async (req: Request, res: Response) => {
   const adminId = req.user?.id;
   const { id } = req.params;
   const { role } = req.body;
@@ -68,7 +68,7 @@ const updateRole = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const deleteUser = catchAsync(async (req: Request, res: Response) => {
+const deleteUser = asyncHandler(async (req: Request, res: Response) => {
   const adminId = req.user?.id;
   const { id } = req.params;
 
