@@ -9,11 +9,15 @@ import {
   updateContentSchema,
 } from "./ai.validation";
 
+import { aiGenerationLimiter, dailyAiLimiter } from "../../../config/rateLimiter";
+
 const router = Router();
 
 router.post(
   "/generate",
   checkAuth(UserRole.USER, UserRole.MANAGER, UserRole.ADMIN),
+  aiGenerationLimiter,
+  dailyAiLimiter,
   validateRequest(generateContentSchema),
   AiController.generateContent
 );
@@ -21,6 +25,8 @@ router.post(
 router.post(
   "/generate/bulk",
   checkAuth(UserRole.USER, UserRole.MANAGER, UserRole.ADMIN),
+  aiGenerationLimiter,
+  dailyAiLimiter,
   validateRequest(bulkGenerateContentSchema),
   AiController.generateBulk
 );
@@ -28,8 +34,11 @@ router.post(
 router.post(
   "/regenerate/:id",
   checkAuth(UserRole.USER, UserRole.MANAGER, UserRole.ADMIN),
+  aiGenerationLimiter,
+  dailyAiLimiter,
   AiController.regenerate
 );
+
 
 router.get(
   "/",

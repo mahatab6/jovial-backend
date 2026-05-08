@@ -8,6 +8,8 @@ import { auth } from './app/lib/auth';
 import { requestLogger } from './app/middlewares/logger.middleware';
 import { globalErrorHandler } from './app/middlewares/globalErrorHandler';
 
+import { apiLimiter, authLimiter } from './config/rateLimiter';
+
 const app: Application = express()
 
 app.use(
@@ -17,13 +19,15 @@ app.use(
   })
 );
 
+app.use(apiLimiter);
 app.use(requestLogger);
 app.use(express.json());
 app.use(cookieParser());
 
-app.all("/api/auth/*splat", toNodeHandler(auth));
+app.all("/api/auth/*splat", authLimiter, toNodeHandler(auth));
 
 app.use("/api/v1", IndexRoutes)
+
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Jovial AI backend running ')

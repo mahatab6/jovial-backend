@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "E:\\PH\\jovial-ai\\jovial-ai-backend\\logs\\.520deb37ec1a51b7b4e654ec2964f75a6360ab13-audit.json",
+    "files": [
+        {
+            "date": 1778265117823,
+            "name": "E:\\PH\\jovial-ai\\jovial-ai-backend\\logs\\auth-2026-05-09.log",
+            "hash": "ac210de3844c284a58366a9089f43a9f6de60b3195f0cd937408db0405d33696"
+        }
+    ],
+    "hashType": "sha256"
+}
