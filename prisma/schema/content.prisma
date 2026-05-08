@@ -7,7 +7,10 @@ model Content {
   metadata  Json? // seo score, keywords, etc.
   userId    String
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime    @default(now())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  deletedAt     DateTime?
+  regeneratedAt DateTime?
 
-  @@index([userId, type])
+  @@index([userId, type, deletedAt])
 }

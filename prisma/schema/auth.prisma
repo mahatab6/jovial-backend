@@ -13,6 +13,9 @@ model User {
   apiUsages           ApiUsage[]
   generationHistories GenerationHistory[]
   userPreference      UserPreference?
+  managerId           String?
+  manager             User?               @relation("TeamMembers", fields: [managerId], references: [id])
+  teamMembers         User[]              @relation("TeamMembers")
 
   @@unique([email])
   @@map("user")

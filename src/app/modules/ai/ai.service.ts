@@ -2,8 +2,10 @@ import OpenAI from "openai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { prisma } from "../../lib/prisma";
 import AppErrors from "../../errorHandler/AppErrors";
-import { ContentType } from "../../generated/prisma/enums";
+import { ContentType, UserRole } from "../../generated/prisma/enums";
 import status from "http-status";
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { IQueryParams } from "../../interface/query.interface";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -154,8 +156,177 @@ Prompt: ${prompt}
       content,
       history,
       aiResponse,
-
     };
+  }
+
+  static async generateBulkContent(userId: string, items: { title: string; prompt: string; type: ContentType }[]) {
+    const results = await Promise.allSettled(
+      items.map((item) =>
+        this.generateContent(userId, {
+          prompt: item.prompt,
+          type: item.type,
+          model: "gpt-4o-mini", // Default for bulk
+        })
+      )
+    );
+
+    const successful = results.filter((r) => r.status === "fulfilled").map((r: any) => r.value.content);
+    const failedCount = results.filter((r) => r.status === "rejected").length;
+
+    return {
+      successCount: successful.length,
+      failedCount,
+      data: successful,
+    };
+  }
+
+  static async regenerateContent(userId: string, id: string, userRole: string) {
+    const existingContent = await prisma.content.findUnique({
+      where: { id },
+    });
+
+    if (!existingContent) {
+      throw new AppErrors(status.NOT_FOUND, "Content not found");
+    }
+
+    if (userRole !== UserRole.ADMIN && existingContent.userId !== userId) {
+      throw new AppErrors(status.FORBIDDEN, "Access denied");
+    }
+
+    const result = await this.generateContent(userId, {
+      prompt: existingContent.prompt,
+      type: existingContent.type,
+    });
+
+    const updatedContent = await prisma.content.update({
+      where: { id },
+      data: {
+        content: result.content.content,
+        metadata: result.content.metadata as any,
+        regeneratedAt: new Date(),
+      },
+    });
+
+    return updatedContent;
+  }
+
+  static async getMyContents(userId: string, queryParams: IQueryParams) {
+    const contentQuery = new QueryBuilder(prisma.content, queryParams, {
+      searchableFields: ["title", "prompt"],
+      filterableFields: ["type"],
+    })
+      .search()
+      .filter()
+      .sort()
+      .paginate()
+      .where({ userId, deletedAt: null });
+
+    return await contentQuery.execute();
+  }
+
+  static async searchContents(userId: string, queryParams: IQueryParams) {
+    const contentQuery = new QueryBuilder(prisma.content, queryParams, {
+      searchableFields: ["title", "prompt", "type"],
+    })
+      .search()
+      .sort()
+      .paginate()
+      .where({ userId, deletedAt: null });
+
+    return await contentQuery.execute();
+  }
+
+  static async getSingleContent(userId: string, id: string, userRole: string) {
+    const content = await prisma.content.findUnique({
+      where: { id },
+    });
+
+    if (!content || content.deletedAt) {
+      throw new AppErrors(status.NOT_FOUND, "Content not found");
+    }
+
+    if (userRole !== UserRole.ADMIN && content.userId !== userId) {
+      throw new AppErrors(status.FORBIDDEN, "Access denied");
+    }
+
+    return content;
+  }
+
+  static async updateContent(userId: string, id: string, data: any) {
+    const content = await prisma.content.findUnique({
+      where: { id },
+    });
+
+    if (!content || content.deletedAt) {
+      throw new AppErrors(status.NOT_FOUND, "Content not found");
+    }
+
+    if (content.userId !== userId) {
+      throw new AppErrors(status.FORBIDDEN, "Access denied");
+    }
+
+    return await prisma.content.update({
+      where: { id },
+      data: {
+        title: data.title,
+        metadata: data.metadata ? { ...(content.metadata as any), ...data.metadata } : undefined,
+      },
+    });
+  }
+
+  static async deleteContent(userId: string, id: string, userRole: string) {
+    const content = await prisma.content.findUnique({
+      where: { id },
+    });
+
+    if (!content || content.deletedAt) {
+      throw new AppErrors(status.NOT_FOUND, "Content not found");
+    }
+
+    if (userRole !== UserRole.ADMIN && content.userId !== userId) {
+      throw new AppErrors(status.FORBIDDEN, "Access denied");
+    }
+
+    return await prisma.content.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+  }
+
+  static async getTeamContents(managerId: string, queryParams: IQueryParams) {
+    // Find team members first
+    const teamMembers = await prisma.user.findMany({
+      where: { managerId },
+      select: { id: true },
+    });
+
+    const memberIds = teamMembers.map((m) => m.id);
+
+    const contentQuery = new QueryBuilder(prisma.content, queryParams, {
+      searchableFields: ["title", "prompt"],
+      filterableFields: ["type", "userId"],
+    })
+      .search()
+      .filter()
+      .sort()
+      .paginate()
+      .where({ userId: { in: memberIds }, deletedAt: null });
+
+    return await contentQuery.execute();
+  }
+
+  static async getAllContents(queryParams: IQueryParams) {
+    const contentQuery = new QueryBuilder(prisma.content, queryParams, {
+      searchableFields: ["title", "prompt"],
+      filterableFields: ["type", "userId"],
+    })
+      .search()
+      .filter()
+      .sort()
+      .paginate()
+      .where({ deletedAt: null });
+
+    return await contentQuery.execute();
   }
 }
 
