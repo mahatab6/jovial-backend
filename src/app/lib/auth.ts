@@ -9,9 +9,10 @@ export const auth = betterAuth({
   baseUrl: envVariable.BETTER_AUTH_URL!,
   secret: envVariable.BETTER_AUTH_SECRET!,
   trustedOrigins: [
-  "http://localhost:3000",
-  envVariable.FRONTEND_URL,
-],
+    "http://localhost:3000",
+    envVariable.FRONTEND_URL,
+    envVariable.BETTER_AUTH_URL,
+  ],
 
   database: prismaAdapter(prisma, {
     provider: "postgresql",

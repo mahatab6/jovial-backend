@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { ContentsRoutes } from "../modules/ai/ai.routes";
+import { aiRoutes } from "../modules/ai/ai.routes";
 
 const router = Router();
 
-router.use("/contents", ContentsRoutes)
+router.use("/ai", aiRoutes)
 
 
 export const IndexRoutes = router;
