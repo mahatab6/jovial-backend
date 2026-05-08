@@ -5,10 +5,13 @@ import { sendResponse } from "../../share/sendResponse";
 import status from "http-status";
 import { ContentType } from "../../generated/prisma/enums";
 import AIService, { GenerateContentInput } from "./ai.service";
+import { aiGenerationQueue } from "../../../config/queue";
+import { UserRole } from "../../generated/prisma/enums";
 
 
 const generateContent = catchAsync(async (req: Request, res: Response) => {
   const userId = req.user?.id;
+  const userRole = req.user?.role;
 
   if (!userId) {
     throw new Error("User not found");
@@ -25,15 +28,67 @@ const generateContent = catchAsync(async (req: Request, res: Response) => {
     model,
   };
 
-  const result = await AIService.generateContent(userId, input);
+  // Determine priority based on role
+  let priority = 3; // Default for USER
+  if (userRole === UserRole.ADMIN) priority = 1;
+  else if (userRole === UserRole.MANAGER) priority = 2;
+
+  // Add to Job Queue
+  const job = await aiGenerationQueue.add(
+    "generate-content",
+    {
+      userId,
+      input,
+      requestedAt: new Date()
+    },
+    {
+      priority,
+      removeOnComplete: true,
+    }
+  );
+
+  sendResponse(res, {
+    httpStatusCode: status.ACCEPTED,
+    success: true,
+    message: "AI generation started. Processing in background...",
+    data: {
+      jobId: job.id,
+      status: "queued",
+      priority: priority === 1 ? "high" : priority === 2 ? "medium" : "normal"
+    }
+  });
+});
+
+const getJobStatus = catchAsync(async (req: Request, res: Response) => {
+  const { jobId } = req.params;
+  const job = await aiGenerationQueue.getJob(jobId as string);
+
+  if (!job) {
+    return sendResponse(res, {
+      httpStatusCode: status.NOT_FOUND,
+      success: false,
+      message: "Job not found",
+    });
+  }
+
+  const state = await job.getState();
+  const progress = job.progress;
+  const result = job.returnvalue;
 
   sendResponse(res, {
     httpStatusCode: status.OK,
     success: true,
-    message: "Content generated successfully",
-    data: result.content,
+    message: `Job is currently ${state}`,
+    data: {
+      id: job.id,
+      state,
+      progress,
+      result: state === "completed" ? result : null,
+      failedReason: state === "failed" ? job.failedReason : null
+    }
   });
 });
+
 
 const generateBulk = catchAsync(async (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -161,6 +216,7 @@ const getAllContents = catchAsync(async (req: Request, res: Response) => {
 
 export const AiController = {
   generateContent,
+  getJobStatus,
   generateBulk,
   regenerate,
   getMyContents,

@@ -13,6 +13,12 @@ import { aiGenerationLimiter, dailyAiLimiter } from "../../../config/rateLimiter
 
 const router = Router();
 
+router.get(
+  "/job-status/:jobId",
+  checkAuth(UserRole.USER, UserRole.MANAGER, UserRole.ADMIN),
+  AiController.getJobStatus
+);
+
 router.post(
   "/generate",
   checkAuth(UserRole.USER, UserRole.MANAGER, UserRole.ADMIN),
