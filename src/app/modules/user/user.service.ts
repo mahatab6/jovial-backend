@@ -5,9 +5,14 @@ import status from "http-status";
 import { UserUtils } from "./user.utils";
 import { QueryBuilder } from "../../utils/QueryBuilder";
 import { IQueryParams } from "../../interface/query.interface";
+import { CacheUtils } from "../../utils/cache.utils";
 
 class UserService {
   static async getMe(userId: string) {
+    const cacheKey = `user:profile:${userId}`;
+    const cachedUser = await CacheUtils.get(cacheKey);
+    if (cachedUser) return cachedUser;
+
     const user = await prisma.user.findUnique({
       where: { id: userId, deletedAt: null },
       include: {
@@ -19,7 +24,10 @@ class UserService {
       throw new AppErrors(status.NOT_FOUND, "User not found");
     }
 
-    return UserUtils.sanitizeUserResponse(user);
+    const sanitizedUser = UserUtils.sanitizeUserResponse(user);
+    await CacheUtils.set(cacheKey, sanitizedUser, 3600); // Cache for 1 hour
+
+    return sanitizedUser;
   }
 
   static async updateMe(userId: string, data: any) {
@@ -45,7 +53,10 @@ class UserService {
       return user;
     });
 
-    return UserUtils.sanitizeUserResponse(result);
+    const sanitizedResult = UserUtils.sanitizeUserResponse(result);
+    await CacheUtils.del(`user:profile:${userId}`); // Invalidate cache
+    
+    return sanitizedResult;
   }
 
   static async getAllUsers(queryParams: IQueryParams) {

@@ -7,6 +7,7 @@ import status from "http-status";
 import { QueryBuilder } from "../../utils/QueryBuilder";
 import { IQueryParams } from "../../interface/query.interface";
 import { LoggerUtils } from "../../utils/logger.utils";
+import { CacheUtils } from "../../utils/cache.utils";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -245,6 +246,10 @@ Prompt: ${prompt}
   }
 
   static async getSingleContent(userId: string, id: string, userRole: string) {
+    const cacheKey = `content:${id}`;
+    const cachedContent = await CacheUtils.get<any>(cacheKey);
+    if (cachedContent) return cachedContent;
+
     const content = await prisma.content.findUnique({
       where: { id },
     });
@@ -257,6 +262,7 @@ Prompt: ${prompt}
       throw new AppErrors(status.FORBIDDEN, "Access denied");
     }
 
+    await CacheUtils.set(cacheKey, content, 1800); // Cache for 30 mins
     return content;
   }
 
@@ -273,13 +279,16 @@ Prompt: ${prompt}
       throw new AppErrors(status.FORBIDDEN, "Access denied");
     }
 
-    return await prisma.content.update({
+    const result = await prisma.content.update({
       where: { id },
       data: {
         title: data.title,
         metadata: data.metadata ? { ...(content.metadata as any), ...data.metadata } : undefined,
       },
     });
+
+    await CacheUtils.del(`content:${id}`); // Invalidate cache
+    return result;
   }
 
   static async deleteContent(userId: string, id: string, userRole: string) {
@@ -295,10 +304,13 @@ Prompt: ${prompt}
       throw new AppErrors(status.FORBIDDEN, "Access denied");
     }
 
-    return await prisma.content.update({
+    const result = await prisma.content.update({
       where: { id },
       data: { deletedAt: new Date() },
     });
+
+    await CacheUtils.del(`content:${id}`); // Invalidate cache
+    return result;
   }
 
   static async getTeamContents(managerId: string, queryParams: IQueryParams) {
