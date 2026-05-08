@@ -20,8 +20,18 @@ export type UserModel = runtime.Types.Result.DefaultSelection<Prisma.$UserPayloa
 
 export type AggregateUser = {
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
+}
+
+export type UserAvgAggregateOutputType = {
+  credits: number | null
+}
+
+export type UserSumAggregateOutputType = {
+  credits: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -34,6 +44,13 @@ export type UserMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   managerId: string | null
+  bio: string | null
+  credits: number | null
+  plan: $Enums.SubscriptionPlan | null
+  status: string | null
+  verified: boolean | null
+  blocked: boolean | null
+  deletedAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -46,6 +63,13 @@ export type UserMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   managerId: string | null
+  bio: string | null
+  credits: number | null
+  plan: $Enums.SubscriptionPlan | null
+  status: string | null
+  verified: boolean | null
+  blocked: boolean | null
+  deletedAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -58,9 +82,25 @@ export type UserCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   managerId: number
+  bio: number
+  socialLinks: number
+  credits: number
+  plan: number
+  status: number
+  verified: number
+  blocked: number
+  deletedAt: number
   _all: number
 }
 
+
+export type UserAvgAggregateInputType = {
+  credits?: true
+}
+
+export type UserSumAggregateInputType = {
+  credits?: true
+}
 
 export type UserMinAggregateInputType = {
   id?: true
@@ -72,6 +112,13 @@ export type UserMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   managerId?: true
+  bio?: true
+  credits?: true
+  plan?: true
+  status?: true
+  verified?: true
+  blocked?: true
+  deletedAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -84,6 +131,13 @@ export type UserMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   managerId?: true
+  bio?: true
+  credits?: true
+  plan?: true
+  status?: true
+  verified?: true
+  blocked?: true
+  deletedAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -96,6 +150,14 @@ export type UserCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   managerId?: true
+  bio?: true
+  socialLinks?: true
+  credits?: true
+  plan?: true
+  status?: true
+  verified?: true
+  blocked?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -137,6 +199,18 @@ export type UserAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: UserAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: UserSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: UserMinAggregateInputType
@@ -167,6 +241,8 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: UserCountAggregateInputType | true
+  _avg?: UserAvgAggregateInputType
+  _sum?: UserSumAggregateInputType
   _min?: UserMinAggregateInputType
   _max?: UserMaxAggregateInputType
 }
@@ -181,7 +257,17 @@ export type UserGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   managerId: string | null
+  bio: string | null
+  socialLinks: runtime.JsonValue | null
+  credits: number
+  plan: $Enums.SubscriptionPlan
+  status: string
+  verified: boolean
+  blocked: boolean
+  deletedAt: Date | null
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
 }
@@ -214,6 +300,14 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   managerId?: Prisma.StringNullableFilter<"User"> | string | null
+  bio?: Prisma.StringNullableFilter<"User"> | string | null
+  socialLinks?: Prisma.JsonNullableFilter<"User">
+  credits?: Prisma.IntFilter<"User"> | number
+  plan?: Prisma.EnumSubscriptionPlanFilter<"User"> | $Enums.SubscriptionPlan
+  status?: Prisma.StringFilter<"User"> | string
+  verified?: Prisma.BoolFilter<"User"> | boolean
+  blocked?: Prisma.BoolFilter<"User"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
   contents?: Prisma.ContentListRelationFilter
@@ -234,6 +328,14 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  bio?: Prisma.SortOrderInput | Prisma.SortOrder
+  socialLinks?: Prisma.SortOrderInput | Prisma.SortOrder
+  credits?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verified?: Prisma.SortOrder
+  blocked?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   accounts?: Prisma.AccountOrderByRelationAggregateInput
   contents?: Prisma.ContentOrderByRelationAggregateInput
@@ -257,6 +359,14 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   managerId?: Prisma.StringNullableFilter<"User"> | string | null
+  bio?: Prisma.StringNullableFilter<"User"> | string | null
+  socialLinks?: Prisma.JsonNullableFilter<"User">
+  credits?: Prisma.IntFilter<"User"> | number
+  plan?: Prisma.EnumSubscriptionPlanFilter<"User"> | $Enums.SubscriptionPlan
+  status?: Prisma.StringFilter<"User"> | string
+  verified?: Prisma.BoolFilter<"User"> | boolean
+  blocked?: Prisma.BoolFilter<"User"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
   contents?: Prisma.ContentListRelationFilter
@@ -277,9 +387,19 @@ export type UserOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  bio?: Prisma.SortOrderInput | Prisma.SortOrder
+  socialLinks?: Prisma.SortOrderInput | Prisma.SortOrder
+  credits?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verified?: Prisma.SortOrder
+  blocked?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
+  _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
+  _sum?: Prisma.UserSumOrderByAggregateInput
 }
 
 export type UserScalarWhereWithAggregatesInput = {
@@ -295,6 +415,14 @@ export type UserScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   managerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  bio?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  socialLinks?: Prisma.JsonNullableWithAggregatesFilter<"User">
+  credits?: Prisma.IntWithAggregatesFilter<"User"> | number
+  plan?: Prisma.EnumSubscriptionPlanWithAggregatesFilter<"User"> | $Enums.SubscriptionPlan
+  status?: Prisma.StringWithAggregatesFilter<"User"> | string
+  verified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  blocked?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
 }
 
 export type UserCreateInput = {
@@ -306,6 +434,14 @@ export type UserCreateInput = {
   role?: $Enums.UserRole
   createdAt?: Date | string
   updatedAt?: Date | string
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentCreateNestedManyWithoutUserInput
@@ -326,6 +462,14 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentUncheckedCreateNestedManyWithoutUserInput
@@ -344,6 +488,14 @@ export type UserUpdateInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUpdateManyWithoutUserNestedInput
@@ -364,6 +516,14 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUncheckedUpdateManyWithoutUserNestedInput
@@ -383,6 +543,14 @@ export type UserCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -394,6 +562,14 @@ export type UserUpdateManyMutationInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -406,6 +582,14 @@ export type UserUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserScalarRelationFilter = {
@@ -438,6 +622,18 @@ export type UserCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
+  bio?: Prisma.SortOrder
+  socialLinks?: Prisma.SortOrder
+  credits?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verified?: Prisma.SortOrder
+  blocked?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+}
+
+export type UserAvgOrderByAggregateInput = {
+  credits?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -450,6 +646,13 @@ export type UserMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
+  bio?: Prisma.SortOrder
+  credits?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verified?: Prisma.SortOrder
+  blocked?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -462,6 +665,17 @@ export type UserMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
+  bio?: Prisma.SortOrder
+  credits?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  verified?: Prisma.SortOrder
+  blocked?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+}
+
+export type UserSumOrderByAggregateInput = {
+  credits?: Prisma.SortOrder
 }
 
 export type UserCreateNestedOneWithoutApiUsagesInput = {
@@ -508,6 +722,14 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type EnumUserRoleFieldUpdateOperationsInput = {
   set?: $Enums.UserRole
+}
+
+export type EnumSubscriptionPlanFieldUpdateOperationsInput = {
+  set?: $Enums.SubscriptionPlan
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type UserUpdateOneWithoutTeamMembersNestedInput = {
@@ -627,6 +849,14 @@ export type UserCreateWithoutApiUsagesInput = {
   role?: $Enums.UserRole
   createdAt?: Date | string
   updatedAt?: Date | string
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentCreateNestedManyWithoutUserInput
@@ -646,6 +876,14 @@ export type UserUncheckedCreateWithoutApiUsagesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentUncheckedCreateNestedManyWithoutUserInput
@@ -679,6 +917,14 @@ export type UserUpdateWithoutApiUsagesInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUpdateManyWithoutUserNestedInput
@@ -698,6 +944,14 @@ export type UserUncheckedUpdateWithoutApiUsagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUncheckedUpdateManyWithoutUserNestedInput
@@ -715,6 +969,14 @@ export type UserCreateWithoutTeamMembersInput = {
   role?: $Enums.UserRole
   createdAt?: Date | string
   updatedAt?: Date | string
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentCreateNestedManyWithoutUserInput
@@ -734,6 +996,14 @@ export type UserUncheckedCreateWithoutTeamMembersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentUncheckedCreateNestedManyWithoutUserInput
@@ -756,6 +1026,14 @@ export type UserCreateWithoutManagerInput = {
   role?: $Enums.UserRole
   createdAt?: Date | string
   updatedAt?: Date | string
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentCreateNestedManyWithoutUserInput
@@ -774,6 +1052,14 @@ export type UserUncheckedCreateWithoutManagerInput = {
   role?: $Enums.UserRole
   createdAt?: Date | string
   updatedAt?: Date | string
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentUncheckedCreateNestedManyWithoutUserInput
@@ -813,6 +1099,14 @@ export type UserUpdateWithoutTeamMembersInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUpdateManyWithoutUserNestedInput
@@ -832,6 +1126,14 @@ export type UserUncheckedUpdateWithoutTeamMembersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUncheckedUpdateManyWithoutUserNestedInput
@@ -869,6 +1171,14 @@ export type UserScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   managerId?: Prisma.StringNullableFilter<"User"> | string | null
+  bio?: Prisma.StringNullableFilter<"User"> | string | null
+  socialLinks?: Prisma.JsonNullableFilter<"User">
+  credits?: Prisma.IntFilter<"User"> | number
+  plan?: Prisma.EnumSubscriptionPlanFilter<"User"> | $Enums.SubscriptionPlan
+  status?: Prisma.StringFilter<"User"> | string
+  verified?: Prisma.BoolFilter<"User"> | boolean
+  blocked?: Prisma.BoolFilter<"User"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -880,6 +1190,14 @@ export type UserCreateWithoutSessionsInput = {
   role?: $Enums.UserRole
   createdAt?: Date | string
   updatedAt?: Date | string
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentCreateNestedManyWithoutUserInput
   apiUsages?: Prisma.ApiUsageCreateNestedManyWithoutUserInput
@@ -899,6 +1217,14 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentUncheckedCreateNestedManyWithoutUserInput
   apiUsages?: Prisma.ApiUsageUncheckedCreateNestedManyWithoutUserInput
@@ -932,6 +1258,14 @@ export type UserUpdateWithoutSessionsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUpdateManyWithoutUserNestedInput
   apiUsages?: Prisma.ApiUsageUpdateManyWithoutUserNestedInput
@@ -951,6 +1285,14 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUncheckedUpdateManyWithoutUserNestedInput
   apiUsages?: Prisma.ApiUsageUncheckedUpdateManyWithoutUserNestedInput
@@ -968,6 +1310,14 @@ export type UserCreateWithoutAccountsInput = {
   role?: $Enums.UserRole
   createdAt?: Date | string
   updatedAt?: Date | string
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentCreateNestedManyWithoutUserInput
   apiUsages?: Prisma.ApiUsageCreateNestedManyWithoutUserInput
@@ -987,6 +1337,14 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentUncheckedCreateNestedManyWithoutUserInput
   apiUsages?: Prisma.ApiUsageUncheckedCreateNestedManyWithoutUserInput
@@ -1020,6 +1378,14 @@ export type UserUpdateWithoutAccountsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUpdateManyWithoutUserNestedInput
   apiUsages?: Prisma.ApiUsageUpdateManyWithoutUserNestedInput
@@ -1039,6 +1405,14 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUncheckedUpdateManyWithoutUserNestedInput
   apiUsages?: Prisma.ApiUsageUncheckedUpdateManyWithoutUserNestedInput
@@ -1056,6 +1430,14 @@ export type UserCreateWithoutContentsInput = {
   role?: $Enums.UserRole
   createdAt?: Date | string
   updatedAt?: Date | string
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   apiUsages?: Prisma.ApiUsageCreateNestedManyWithoutUserInput
@@ -1075,6 +1457,14 @@ export type UserUncheckedCreateWithoutContentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   apiUsages?: Prisma.ApiUsageUncheckedCreateNestedManyWithoutUserInput
@@ -1108,6 +1498,14 @@ export type UserUpdateWithoutContentsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   apiUsages?: Prisma.ApiUsageUpdateManyWithoutUserNestedInput
@@ -1127,6 +1525,14 @@ export type UserUncheckedUpdateWithoutContentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   apiUsages?: Prisma.ApiUsageUncheckedUpdateManyWithoutUserNestedInput
@@ -1144,6 +1550,14 @@ export type UserCreateWithoutGenerationHistoriesInput = {
   role?: $Enums.UserRole
   createdAt?: Date | string
   updatedAt?: Date | string
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentCreateNestedManyWithoutUserInput
@@ -1163,6 +1577,14 @@ export type UserUncheckedCreateWithoutGenerationHistoriesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentUncheckedCreateNestedManyWithoutUserInput
@@ -1196,6 +1618,14 @@ export type UserUpdateWithoutGenerationHistoriesInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUpdateManyWithoutUserNestedInput
@@ -1215,6 +1645,14 @@ export type UserUncheckedUpdateWithoutGenerationHistoriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUncheckedUpdateManyWithoutUserNestedInput
@@ -1232,6 +1670,14 @@ export type UserCreateWithoutUserPreferenceInput = {
   role?: $Enums.UserRole
   createdAt?: Date | string
   updatedAt?: Date | string
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentCreateNestedManyWithoutUserInput
@@ -1251,6 +1697,14 @@ export type UserUncheckedCreateWithoutUserPreferenceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   managerId?: string | null
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   contents?: Prisma.ContentUncheckedCreateNestedManyWithoutUserInput
@@ -1284,6 +1738,14 @@ export type UserUpdateWithoutUserPreferenceInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUpdateManyWithoutUserNestedInput
@@ -1303,6 +1765,14 @@ export type UserUncheckedUpdateWithoutUserPreferenceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUncheckedUpdateManyWithoutUserNestedInput
@@ -1320,6 +1790,14 @@ export type UserCreateManyManagerInput = {
   role?: $Enums.UserRole
   createdAt?: Date | string
   updatedAt?: Date | string
+  bio?: string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: number
+  plan?: $Enums.SubscriptionPlan
+  status?: string
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: Date | string | null
 }
 
 export type UserUpdateWithoutManagerInput = {
@@ -1331,6 +1809,14 @@ export type UserUpdateWithoutManagerInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUpdateManyWithoutUserNestedInput
@@ -1349,6 +1835,14 @@ export type UserUncheckedUpdateWithoutManagerInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   contents?: Prisma.ContentUncheckedUpdateManyWithoutUserNestedInput
@@ -1367,6 +1861,14 @@ export type UserUncheckedUpdateManyWithoutManagerInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  socialLinks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  credits?: Prisma.IntFieldUpdateOperationsInput | number
+  plan?: Prisma.EnumSubscriptionPlanFieldUpdateOperationsInput | $Enums.SubscriptionPlan
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  blocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -1455,6 +1957,14 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   managerId?: boolean
+  bio?: boolean
+  socialLinks?: boolean
+  credits?: boolean
+  plan?: boolean
+  status?: boolean
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: boolean
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   contents?: boolean | Prisma.User$contentsArgs<ExtArgs>
@@ -1476,6 +1986,14 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   managerId?: boolean
+  bio?: boolean
+  socialLinks?: boolean
+  credits?: boolean
+  plan?: boolean
+  status?: boolean
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: boolean
   manager?: boolean | Prisma.User$managerArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1489,6 +2007,14 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   managerId?: boolean
+  bio?: boolean
+  socialLinks?: boolean
+  credits?: boolean
+  plan?: boolean
+  status?: boolean
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: boolean
   manager?: boolean | Prisma.User$managerArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1502,9 +2028,17 @@ export type UserSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   managerId?: boolean
+  bio?: boolean
+  socialLinks?: boolean
+  credits?: boolean
+  plan?: boolean
+  status?: boolean
+  verified?: boolean
+  blocked?: boolean
+  deletedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "role" | "createdAt" | "updatedAt" | "managerId", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "role" | "createdAt" | "updatedAt" | "managerId" | "bio" | "socialLinks" | "credits" | "plan" | "status" | "verified" | "blocked" | "deletedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
@@ -1545,6 +2079,14 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdAt: Date
     updatedAt: Date
     managerId: string | null
+    bio: string | null
+    socialLinks: runtime.JsonValue | null
+    credits: number
+    plan: $Enums.SubscriptionPlan
+    status: string
+    verified: boolean
+    blocked: boolean
+    deletedAt: Date | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1985,6 +2527,14 @@ export interface UserFieldRefs {
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly managerId: Prisma.FieldRef<"User", 'String'>
+  readonly bio: Prisma.FieldRef<"User", 'String'>
+  readonly socialLinks: Prisma.FieldRef<"User", 'Json'>
+  readonly credits: Prisma.FieldRef<"User", 'Int'>
+  readonly plan: Prisma.FieldRef<"User", 'SubscriptionPlan'>
+  readonly status: Prisma.FieldRef<"User", 'String'>
+  readonly verified: Prisma.FieldRef<"User", 'Boolean'>
+  readonly blocked: Prisma.FieldRef<"User", 'Boolean'>
+  readonly deletedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 

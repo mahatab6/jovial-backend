@@ -11,3 +11,9 @@ enum ContentType {
   PRODUCT_DESC
   OTHER
 }
+
+enum SubscriptionPlan {
+  FREE
+  PRO
+  ENTERPRISE
+}

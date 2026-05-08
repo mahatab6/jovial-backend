@@ -16,6 +16,14 @@ model User {
   managerId           String?
   manager             User?               @relation("TeamMembers", fields: [managerId], references: [id])
   teamMembers         User[]              @relation("TeamMembers")
+  bio                 String?
+  socialLinks         Json?
+  credits             Int                 @default(0)
+  plan                SubscriptionPlan    @default(FREE)
+  status              String              @default("active")
+  verified            Boolean             @default(false)
+  blocked             Boolean             @default(false)
+  deletedAt           DateTime?
 
   @@unique([email])
   @@map("user")
