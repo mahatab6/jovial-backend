@@ -2,6 +2,7 @@
 import { createLogger, format, transports } from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 import path from "path";
+import { envVariable } from "./env";
 
 const logDir = path.join(process.cwd(), "logs");
 
@@ -23,7 +24,7 @@ const consoleFormat = format.combine(
 
 // Main Application Logger (Requests, Debug, etc.)
 const logger = createLogger({
-    level: process.env.NODE_ENV === "production" ? "info" : "debug",
+    level: envVariable.NODE_ENV === "production" ? "info" : "debug",
     format: logFormat,
     defaultMeta: { service: "jovial-ai-backend" },
     transports: [
@@ -92,4 +93,4 @@ export const errorLogger = createLogger({
     ],
 });
 
-export default logger;
+export default logger;

@@ -1,1 +1,3 @@
 {"level":"error","message":"[Better-Auth] Invalid password","timestamp":"2026-05-09 00:32:50"}
+{"level":"warn","message":"[Better-Auth] Social provider google is missing clientId or clientSecret","timestamp":"2026-05-09 09:55:21"}
+{"level":"warn","message":"[Better-Auth] Social provider google is missing clientId or clientSecret","timestamp":"2026-05-09 09:57:17"}

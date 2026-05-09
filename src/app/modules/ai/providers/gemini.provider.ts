@@ -1,19 +1,21 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { IAIProvider } from "./ai.provider.interface";
+import { envVariable } from "../../../../config/env";
+
 
 export class GeminiProvider implements IAIProvider {
   private genAI: GoogleGenerativeAI;
 
   constructor() {
-    this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+    this.genAI = new GoogleGenerativeAI(envVariable.GEMINI_API_KEY);
   }
 
   async generateContent(systemPrompt: string, userPrompt: string, model: string): Promise<any> {
     const geminiModel = this.genAI.getGenerativeModel({
       model: model || "gemini-1.5-flash",
       systemInstruction: systemPrompt,
-      generationConfig: { 
-        temperature: 0.7, 
+      generationConfig: {
+        temperature: 0.7,
         maxOutputTokens: 8192,
         responseMimeType: "application/json"
       },

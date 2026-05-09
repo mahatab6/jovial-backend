@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import status from "http-status";
 import { errorLogger } from "../../config/logger";
 import AppError from "../errors/AppError";
+import { envVariable } from "../../config/env";
 
 export const globalErrorHandler = (
   err: any,
@@ -48,7 +49,7 @@ export const globalErrorHandler = (
     success: false,
     message,
     errorMessages,
-    stack: process.env.NODE_ENV === "development" ? err?.stack : null,
+    stack: envVariable.NODE_ENV === "development" ? err?.stack : null,
   });
 };
 

@@ -1,10 +1,10 @@
 // src/config/rateLimiter.ts
-import rateLimit from "express-rate-limit";
+import { rateLimit, ipKeyGenerator } from "express-rate-limit";
 import { Request, Response } from "express";
 
 // Custom key generator (User ID + IP)
 const userAwareKeyGenerator = (req: Request): string => {
-    const userId = (req as any).user?.id || req.ip;
+    const userId = (req as any).user?.id || ipKeyGenerator(req.ip || "", 56);
     return `${userId}:${req.originalUrl}`;
 };
 
@@ -22,7 +22,7 @@ export const authLimiter = rateLimit({
     },
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req) => req.ip || "unknown",
+    keyGenerator: (req) => ipKeyGenerator(req.ip || "", 56),
 });
 
 // Hourly AI Generation Limit
@@ -79,4 +79,4 @@ export const apiLimiter = rateLimit({
         success: false,
         message: "Too many requests, please slow down.",
     },
-});
+});

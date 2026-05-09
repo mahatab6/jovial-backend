@@ -7,6 +7,7 @@ import { IQueryParams } from "../../interface/query.interface";
 import { LoggerUtils } from "../../utils/logger.utils";
 import { CacheUtils } from "../../utils/cache.utils";
 import { getAIProvider } from "./providers";
+import { envVariable } from "../../../config/env";
 
 export type GenerateContentInput = {
   prompt: string;
@@ -19,7 +20,7 @@ export type GenerateContentInput = {
 
 class AIService {
   private static getProvider() {
-    return process.env.AI_PROVIDER?.toLowerCase() || "openai";
+    return envVariable.AI_PROVIDER?.toLowerCase() || "openai";
   }
 
 

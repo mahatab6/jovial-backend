@@ -1,11 +1,12 @@
 import OpenAI from "openai";
 import { IAIProvider } from "./ai.provider.interface";
+import { envVariable } from "../../../../config/env";
 
 export class OpenAIProvider implements IAIProvider {
   private openai: OpenAI;
 
   constructor() {
-    this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    this.openai = new OpenAI({ apiKey: envVariable.OPENAI_API_KEY });
   }
 
   async generateContent(systemPrompt: string, userPrompt: string, model: string): Promise<any> {
