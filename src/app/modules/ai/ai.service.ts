@@ -1,5 +1,3 @@
-import OpenAI from "openai";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { prisma } from "../../lib/prisma";
 import AppError from "../../errors/AppError";
 import { ContentType, UserRole } from "../../generated/prisma/enums";
@@ -8,9 +6,7 @@ import { QueryBuilder } from "../../utils/QueryBuilder";
 import { IQueryParams } from "../../interface/query.interface";
 import { LoggerUtils } from "../../utils/logger.utils";
 import { CacheUtils } from "../../utils/cache.utils";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+import { getAIProvider } from "./providers";
 
 export type GenerateContentInput = {
   prompt: string;
@@ -26,51 +22,6 @@ class AIService {
     return process.env.AI_PROVIDER?.toLowerCase() || "openai";
   }
 
-  private static async callOpenAI(systemPrompt: string, userPrompt: string, model: string) {
-    const completion = await openai.chat.completions.create({
-      model: model || "gpt-4o-mini",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      temperature: 0.75,
-      max_tokens: 4000,
-      response_format: { type: "json_object" },
-    });
-
-    const content = completion.choices[0]?.message?.content;
-    if (!content) throw new Error("No response from OpenAI");
-
-    return JSON.parse(content);
-  }
-
-  private static async callGemini(systemPrompt: string, userPrompt: string, model: string) {
-    const geminiModel = genAI.getGenerativeModel({
-      model: model || "gemini-1.5-flash",
-      systemInstruction: systemPrompt,
-      generationConfig: { 
-        temperature: 0.7, 
-        maxOutputTokens: 8192,
-        responseMimeType: "application/json"
-      },
-    });
-
-    const result = await geminiModel.generateContent(userPrompt);
-
-    const text = result.response.text();
-    try {
-      return JSON.parse(text);
-    } catch {
-      return {
-        title: "Generated Content",
-        content: text,
-        seoScore: 75,
-        keywords: [],
-        readingTime: 5,
-        summary: userPrompt.substring(0, 150),
-      };
-    }
-  }
 
   static async generateContent(userId: string, input: GenerateContentInput) {
     const {
@@ -111,11 +62,8 @@ Prompt: ${prompt}
     let aiResponse: any;
 
     try {
-      if (provider === "gemini") {
-        aiResponse = await this.callGemini(systemPrompt, userPrompt, model || defaultModel);
-      } else {
-        aiResponse = await this.callOpenAI(systemPrompt, userPrompt, model || defaultModel);
-      }
+      const aiProvider = getAIProvider(provider);
+      aiResponse = await aiProvider.generateContent(systemPrompt, userPrompt, model || defaultModel);
     } catch (error: any) {
       LoggerUtils.ai.error(provider, error.message, { userId, model: model || defaultModel });
       throw new AppError(
