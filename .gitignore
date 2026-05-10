@@ -17,7 +17,7 @@ dist
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-/api
+
 # testing
 /coverage
 
