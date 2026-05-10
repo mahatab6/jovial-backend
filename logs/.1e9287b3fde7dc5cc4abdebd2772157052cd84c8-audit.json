@@ -6,9 +6,9 @@
     "auditLog": "E:\\PH\\jovial-ai\\jovial-ai-backend\\logs\\.1e9287b3fde7dc5cc4abdebd2772157052cd84c8-audit.json",
     "files": [
         {
-            "date": 1778265117835,
-            "name": "E:\\PH\\jovial-ai\\jovial-ai-backend\\logs\\error-2026-05-09.log",
-            "hash": "30e2a2df1b7437aaa729de79013c3e572cf95fcb1d5689300cdf2dc61a0fb924"
+            "date": 1778392752724,
+            "name": "E:\\PH\\jovial-ai\\jovial-ai-backend\\logs\\error-2026-05-10.log",
+            "hash": "695a120805513c032f417b677203d3415b9f899884b06f2cf4e6d3bba472b2d2"
         }
     ],
     "hashType": "sha256"

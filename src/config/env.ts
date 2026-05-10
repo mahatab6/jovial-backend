@@ -14,9 +14,8 @@ interface EnvConfig {
   REDIS_PORT: string;
   REDIS_PASSWORD?: string;
   NODE_ENV: string;
-  OPENAI_API_KEY: string;
   GEMINI_API_KEY: string;
-  AI_PROVIDER: string;
+  GEMINI_MODEL?: string;
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
 }
@@ -29,7 +28,7 @@ const loadEnvVariables = (): EnvConfig => {
     "FRONTEND_URL",
     "GOOGLE_CLIENT_ID",
     "GOOGLE_CLIENT_SECRET",
-
+    "GEMINI_API_KEY",
   ];
 
   const missingVariables: string[] = [];
@@ -46,14 +45,6 @@ const loadEnvVariables = (): EnvConfig => {
     );
   }
 
-  // AI Keys - at least one should be present depending on provider
-  const aiProvider = process.env.AI_PROVIDER?.toLowerCase() || "openai";
-  if (aiProvider === "openai" && !process.env.OPENAI_API_KEY) {
-    throw new AppError(status.INTERNAL_SERVER_ERROR, "OPENAI_API_KEY is required when AI_PROVIDER is 'openai'");
-  }
-  if (aiProvider === "gemini" && !process.env.GEMINI_API_KEY) {
-    throw new AppError(status.INTERNAL_SERVER_ERROR, "GEMINI_API_KEY is required when AI_PROVIDER is 'gemini'");
-  }
 
   return {
     DATABASE_URL: process.env.DATABASE_URL as string,
@@ -65,9 +56,8 @@ const loadEnvVariables = (): EnvConfig => {
     REDIS_PORT: process.env.REDIS_PORT || "6379",
     REDIS_PASSWORD: process.env.REDIS_PASSWORD,
     NODE_ENV: process.env.NODE_ENV || "development",
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY as string,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY as string,
-    AI_PROVIDER: process.env.AI_PROVIDER as string,
+    GEMINI_MODEL: process.env.GEMINI_MODEL,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
   };

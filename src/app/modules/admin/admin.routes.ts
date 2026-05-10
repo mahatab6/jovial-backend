@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { AdminController } from "./admin.controller";
-import { checkAuth } from "../../middlewares/ckeckAuth";
+import { checkAuth } from "../../middlewares/checkAuth";
 import { UserRole } from "../../generated/prisma/enums";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { AdminValidation } from "./admin.validation";

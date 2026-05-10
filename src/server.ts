@@ -2,6 +2,7 @@
 
 import app from "./app";
 import { envVariable } from "./config/env";
+import "./app/workers/ai.worker"; // Initialize background workers
 
 const serverStart = async () => {
   try {

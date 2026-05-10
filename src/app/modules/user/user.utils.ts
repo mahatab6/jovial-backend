@@ -22,6 +22,7 @@ export const formatUserProfile = (user: User) => {
     socialLinks: user.socialLinks,
     credits: user.credits,
     createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
   };
 };
 

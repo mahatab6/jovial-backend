@@ -39,7 +39,6 @@
     "express-rate-limit": "^8.5.1",
     "http-status": "^2.1.0",
     "ioredis": "^5.10.1",
-    "openai": "^6.37.0",
     "pg": "^8.20.0",
     "rate-limiter-flexible": "^11.1.0",
     "winston": "^3.19.0",

@@ -25,6 +25,7 @@ export const authLimiter = rateLimit({
     keyGenerator: (req) => ipKeyGenerator(req.ip || "", 56),
 });
 
+
 // Hourly AI Generation Limit
 export const aiGenerationLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour

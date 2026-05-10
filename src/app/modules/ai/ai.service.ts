@@ -19,9 +19,6 @@ export type GenerateContentInput = {
 };
 
 class AIService {
-  private static getProvider() {
-    return envVariable.AI_PROVIDER?.toLowerCase() || "openai";
-  }
 
 
   static async generateContent(userId: string, input: GenerateContentInput) {
@@ -34,13 +31,8 @@ class AIService {
       model,
     } = input;
 
-    let provider = this.getProvider();
-    if (model) {
-      if (model.startsWith("gpt") || model.startsWith("o1")) provider = "openai";
-      if (model.startsWith("gemini")) provider = "gemini";
-    }
-
-    const defaultModel = provider === "openai" ? "gpt-4o-mini" : "gemini-1.5-flash";
+    const provider = "gemini";
+    const defaultModel = envVariable.GEMINI_MODEL || "gemini-1.5-flash";
 
     const systemPrompt = `You are a professional content writer. Respond ONLY with valid JSON using these exact keys:
 {
@@ -60,61 +52,88 @@ Keywords: ${keywords.join(", ") || "N/A"}
 Prompt: ${prompt}
 `;
 
+    const startTime = Date.now();
     let aiResponse: any;
 
     try {
-      const aiProvider = getAIProvider(provider);
-      aiResponse = await aiProvider.generateContent(systemPrompt, userPrompt, model || defaultModel);
+      LoggerUtils.ai.info("Starting AI Generation", { userId, provider, model: defaultModel });
+      const aiProvider = getAIProvider();
+      aiResponse = await aiProvider.generateContent(systemPrompt, userPrompt, defaultModel);
+
+      if (!aiResponse || !aiResponse.content) {
+        throw new Error("AI provider returned empty content");
+      }
+
+      const generationDuration = Date.now() - startTime;
+      LoggerUtils.ai.performance("Generation Duration", generationDuration, { userId, provider });
+      LoggerUtils.ai.info("AI Generation Success", { userId, provider, title: aiResponse.title });
     } catch (error: any) {
-      LoggerUtils.ai.error(provider, error.message, { userId, model: model || defaultModel });
+      LoggerUtils.ai.error(provider, `AI Generation Failed: ${error.message}`, { userId, model: defaultModel });
       throw new AppError(
         status.BAD_GATEWAY,
-        `${provider.toUpperCase()} Error: ${error.message}`
+        `Gemini Error: ${error.message}`
       );
     }
 
     // AI Generation Log
-    LoggerUtils.ai.generation(provider, model || defaultModel, userId, {
+    LoggerUtils.ai.generation(provider, defaultModel, userId, {
       type,
       tone,
       promptLength: prompt.length,
     });
 
     // Database Save
-    const [content, history] = await prisma.$transaction([
-      prisma.content.create({
-        data: {
-          title: aiResponse.title,
-          content: aiResponse.content,
-          type,
-          prompt,
-          metadata: {
-            seoScore: aiResponse.seoScore,
-            keywords: aiResponse.keywords,
-            readingTime: aiResponse.readingTime,
-            summary: aiResponse.summary,
-            modelUsed: model || defaultModel,
-            provider: provider,
+    const dbStartTime = Date.now();
+    try {
+      LoggerUtils.ai.info("Persisting AI Content to Database", { userId, title: aiResponse.title });
+
+      const [content, history] = await prisma.$transaction([
+        prisma.content.create({
+          data: {
+            title: aiResponse.title || "Untitled Content",
+            content: aiResponse.content,
+            type,
+            prompt,
+            metadata: {
+              seoScore: aiResponse.seoScore || 0,
+              keywords: aiResponse.keywords || [],
+              readingTime: aiResponse.readingTime || 0,
+              summary: aiResponse.summary || "",
+              modelUsed: defaultModel,
+              provider: provider,
+            },
+            userId,
           },
-          userId,
-        },
-      }),
+        }),
 
-      prisma.generationHistory.create({
-        data: {
-          userId,
-          prompt,
-          response: aiResponse.content,
-          modelUsed: model || defaultModel,
-        },
-      }),
-    ]);
+        prisma.generationHistory.create({
+          data: {
+            userId,
+            prompt,
+            response: aiResponse.content,
+            modelUsed: defaultModel,
+          },
+        }),
+      ], {
+        timeout: 15000 // 15 seconds
+      });
 
-    return {
-      content,
-      history,
-      aiResponse,
-    };
+      const dbDuration = Date.now() - dbStartTime;
+      const totalDuration = Date.now() - startTime;
+
+      LoggerUtils.ai.performance("Database Persistence Duration", dbDuration, { userId, contentId: content.id });
+      LoggerUtils.ai.performance("Total Request Duration", totalDuration, { userId, contentId: content.id });
+      LoggerUtils.ai.info("Database Persistence Successful", { contentId: content.id, userId });
+
+      return {
+        content,
+        history,
+        aiResponse,
+      };
+    } catch (dbError: any) {
+      LoggerUtils.ai.error("DATABASE_SAVE_FAILED", dbError.message, { userId, prompt: prompt.substring(0, 100) });
+      throw new AppError(status.INTERNAL_SERVER_ERROR, "Failed to save generated content to database");
+    }
   }
 
   static async generateBulkContent(userId: string, items: { title: string; prompt: string; type: ContentType }[]) {
@@ -123,7 +142,6 @@ Prompt: ${prompt}
         this.generateContent(userId, {
           prompt: item.prompt,
           type: item.type,
-          model: "gpt-4o-mini", // Default for bulk
         })
       )
     );

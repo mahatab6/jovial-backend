@@ -1,0 +1,4 @@
+{"level":"info","message":"[Better-Auth] Sign-up attempt for existing email: hello@gmail.com","timestamp":"2026-05-10 12:15:49"}
+{"level":"info","message":"[Better-Auth] Sign-up attempt for existing email: rajucall56@gmail.com","timestamp":"2026-05-10 12:16:55"}
+{"level":"info","message":"[Better-Auth] Sign-up attempt for existing email: rajucall56@gmail.com","timestamp":"2026-05-10 12:19:37"}
+{"code":"state_mismatch","details":{"state":"xuVcZ38mAzKxv6u5OmpuembjSnt_RoR4"},"level":"error","message":"[Better-Auth] Failed to parse state State mismatch: verification not found","name":"BetterAuthError","timestamp":"2026-05-10 14:52:17"}

@@ -8,9 +8,11 @@ import { ContentType } from "../../generated/prisma/enums";
 import AIService, { GenerateContentInput } from "./ai.service";
 import { aiGenerationQueue } from "../../../config/queue";
 import { UserRole } from "../../generated/prisma/enums";
+import { LoggerUtils } from "../../utils/logger.utils";
 
 
 const generateContent = asyncHandler(async (req: Request, res: Response) => {
+  
   const userId = req.user?.id;
   const userRole = req.user?.role;
 
@@ -44,9 +46,22 @@ const generateContent = asyncHandler(async (req: Request, res: Response) => {
     },
     {
       priority,
-      removeOnComplete: true,
+      removeOnComplete: {
+        age: 3600, // Keep for 1 hour so frontend can fetch result
+        count: 1000, // Keep last 1000 jobs
+      },
+      removeOnFail: {
+        age: 24 * 3600, // Keep failed jobs for 24 hours for debugging
+      },
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 5000,
+      }
     }
   );
+ 
+  LoggerUtils.ai.generation("openai", "ai-generation", userId, { jobId: job.id, type });
 
   sendResponse(res, {
     httpStatusCode: status.ACCEPTED,
@@ -62,31 +77,58 @@ const generateContent = asyncHandler(async (req: Request, res: Response) => {
 
 const getJobStatus = asyncHandler(async (req: Request, res: Response) => {
   const { jobId } = req.params;
+  
+  // Single Redis call to fetch job data
   const job = await aiGenerationQueue.getJob(jobId as string);
 
   if (!job) {
     return sendResponse(res, {
       httpStatusCode: status.NOT_FOUND,
       success: false,
-      message: "Job not found",
+      message: "Job not found in queue. It may have expired or been removed.",
     });
   }
 
-  const state = await job.getState();
-  const progress = job.progress;
-  const result = job.returnvalue;
+  // Batch Redis calls for state and progress
+  const [state, progress] = await Promise.all([
+    job.getState(),
+    job.progress
+  ]);
+
+  const result = job.returnvalue || {};
+  const isFailed = state === "failed";
+  const isCompleted = state === "completed";
+
+  // Map BullMQ states to simplified frontend-friendly statuses
+  let simplifiedStatus: 'waiting' | 'active' | 'completed' | 'failed' = 'waiting';
+  if (state === 'completed') simplifiedStatus = 'completed';
+  else if (state === 'failed') simplifiedStatus = 'failed';
+  else if (state === 'active') simplifiedStatus = 'active';
+  else simplifiedStatus = 'waiting'; // prioritized, waiting, delayed, paused -> waiting
+
+  // Normalize response structure
+  const responseData = {
+    jobId: job.id,
+    status: simplifiedStatus, 
+    rawStatus: state,
+    progress: typeof progress === 'number' ? progress : (isCompleted ? 100 : 0),
+    content: result.content || null,
+    title: result.title || null,
+    contentId: result.contentId || null,
+    metadata: result.metadata || null,
+    error: isFailed ? (job.failedReason || result.failedReason || "Unknown error occurred during processing") : null,
+    timestamps: {
+      queuedAt: job.timestamp ? new Date(job.timestamp).toISOString() : null,
+      processedAt: job.processedOn ? new Date(job.processedOn).toISOString() : null,
+      finishedAt: job.finishedOn ? new Date(job.finishedOn).toISOString() : null,
+    }
+  };
 
   sendResponse(res, {
     httpStatusCode: status.OK,
     success: true,
-    message: `Job is currently ${state}`,
-    data: {
-      id: job.id,
-      state,
-      progress,
-      result: state === "completed" ? result : null,
-      failedReason: state === "failed" ? job.failedReason : null
-    }
+    message: `Job state: ${state}`,
+    data: responseData
   });
 });
 

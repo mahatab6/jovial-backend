@@ -93,7 +93,7 @@ class HistoryStatsService {
     const [contentStats, apiUsageStats] = await Promise.all([
       prisma.content.aggregate({
         where: { userId, deletedAt: null, ...dateFilter },
-        _count: { _all: true },
+        _count: { id: true },
       }),
       prisma.apiUsage.aggregate({
         where: { userId, ...(startDate || endDate ? { date: dateFilter.createdAt } : {}) },
@@ -102,7 +102,8 @@ class HistoryStatsService {
     ]);
 
     // Mocking success rate and average time as they aren't explicitly tracked yet
-    const totalContents = contentStats._count._all;
+    const totalContents = (contentStats._count as any).id || (contentStats._count as any)._all;
+
     const totalTokens = apiUsageStats._sum.tokens || 0;
 
     // Daily usage trend
@@ -146,8 +147,8 @@ class HistoryStatsService {
       prisma.content.groupBy({
         by: ["userId"],
         where: { userId: { in: memberIds }, deletedAt: null },
-        _count: { _all: true },
-        orderBy: { _count: { _all: "desc" } },
+        _count: { id: true },
+        orderBy: { _count: { id: "desc" } },
         take: 5,
       }),
     ]);
@@ -188,7 +189,7 @@ class HistoryStatsService {
 
     return distribution.map((item) => ({
       type: item.type,
-      count: item._count._all,
+      count: (item._count as any).id || (item._count as any)._all,
     }));
   }
 
