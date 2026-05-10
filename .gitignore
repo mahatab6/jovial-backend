@@ -17,7 +17,7 @@ dist
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-
+/api
 # testing
 /coverage
 
@@ -47,3 +47,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.vercel
