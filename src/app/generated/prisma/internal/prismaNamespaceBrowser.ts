@@ -58,6 +58,7 @@ export const ModelName = {
   Verification: 'Verification',
   Content: 'Content',
   GenerationHistory: 'GenerationHistory',
+  Template: 'Template',
   UserPreference: 'UserPreference'
 } as const
 
@@ -185,6 +186,22 @@ export const GenerationHistoryScalarFieldEnum = {
 } as const
 
 export type GenerationHistoryScalarFieldEnum = (typeof GenerationHistoryScalarFieldEnum)[keyof typeof GenerationHistoryScalarFieldEnum]
+
+
+export const TemplateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  category: 'category',
+  rating: 'rating',
+  reviewCount: 'reviewCount',
+  previewText: 'previewText',
+  specifications: 'specifications',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TemplateScalarFieldEnum = (typeof TemplateScalarFieldEnum)[keyof typeof TemplateScalarFieldEnum]
 
 
 export const UserPreferenceScalarFieldEnum = {

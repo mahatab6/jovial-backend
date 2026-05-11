@@ -77,6 +77,11 @@ export type Content = Prisma.ContentModel
  */
 export type GenerationHistory = Prisma.GenerationHistoryModel
 /**
+ * Model Template
+ * 
+ */
+export type Template = Prisma.TemplateModel
+/**
  * Model UserPreference
  * 
  */

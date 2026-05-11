@@ -8,12 +8,16 @@ import { bearer } from "better-auth/plugins";
 import { authLogger } from "../../config/logger";
 
 export const auth = betterAuth({
+  // BETTER_AUTH_URL must be the backend's own URL (e.g. Railway URL)
+  // This is what Better Auth uses to construct the OAuth callback URL:
+  // → https://<BETTER_AUTH_URL>/api/auth/callback/google
   baseUrl: envVariable.BETTER_AUTH_URL!,
   secret: envVariable.BETTER_AUTH_SECRET!,
   trustedOrigins: [
     "http://localhost:3000",
+    "http://localhost:5000",
     envVariable.FRONTEND_URL,
-    envVariable.BETTER_AUTH_URL,
+    envVariable.BETTER_AUTH_URL, // backend URL itself
   ],
 
   logger: {

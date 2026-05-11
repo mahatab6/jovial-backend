@@ -1,0 +1,14 @@
+model Template {
+  id             String   @id @default(cuid())
+  name           String
+  description    String
+  category       String
+  rating         Float    @default(0)
+  reviewCount    Int      @default(0)
+  previewText    String
+  specifications String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([category, rating])
+}
